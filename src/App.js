@@ -1,17 +1,23 @@
 import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import View from '@vkontakte/vkui/dist/components/View/View';
+import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
 import '@vkontakte/vkui/dist/vkui.css';
 
-import Home from './panels/Home';
-import Persik from './panels/Persik';
+import Podcasts from "./panels/Podcasts";
+import NewPodcast from "./panels/NewPodcast";
+import EditPodcast from "./panels/EditPodcast";
+import ViewPodcast from "./panels/ViewPodcast";
+import SharePodcast from "./panels/SharePodcast";
+import SelectMusic from "./panels/SelectMusic";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      activePanel: 'home',
+      activePanel: 'podcasts',
+      isLoading: false,
       history: []
     };
 
@@ -24,6 +30,7 @@ class App extends React.Component {
     }
 
     this.go = this.go.bind(this);
+    this.setIsLoading = this.setIsLoading.bind(this);
   }
 
   changeActivePanel(toPanel) {
@@ -46,6 +53,12 @@ class App extends React.Component {
     this.changeActivePanel(toPanel);
   }
 
+  setIsLoading(isLoading) {
+    this.setState({
+      isLoading
+    });
+  }
+
   componentDidMount() {
     bridge.subscribe(({ detail: { type, data }}) => {
       if (type === 'VKWebAppUpdateConfig') {
@@ -66,10 +79,14 @@ class App extends React.Component {
 
   render() {
     return (
-      <View activePanel={this.state.activePanel}>
-        <Home id='home' go={this.go} />
-        <Persik id='persik' go={this.go} />
-      </View>
+        <View popout={this.state.isLoading ? <ScreenSpinner /> : null} activePanel={this.state.activePanel}>
+          <Podcasts id='podcasts' go={this.go}/>
+          <NewPodcast id='new-podcast' go={this.go}/>
+          <EditPodcast id='edit-podcast' go={this.go} setIsLoading={this.setIsLoading}/>
+          <ViewPodcast id='view-podcast' go={this.go}/>
+          <SharePodcast id='share' go={this.go}/>
+          <SelectMusic id='select-music' go={this.go} setIsLoading={this.setIsLoading}/>
+        </View>
     )
   }
 }

@@ -1,0 +1,9 @@
+.FormField {
+    margin-left: 12px;
+}
+
+.dismiss {
+    background-image: url("../img/remove_circle_24.svg");
+    width: 24px;
+    height: 24px;
+}
